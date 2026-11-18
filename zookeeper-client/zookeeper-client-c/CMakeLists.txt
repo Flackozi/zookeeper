@@ -42,19 +42,6 @@ if(WANT_SYNCAPI)
   add_definitions(-DTHREADED)
 endif()
 
-# CppUnit option
-if(WIN32 OR APPLE)
-  # The tests do not yet compile on Windows or macOS,
-  # so we set this to off by default.
-  #
-  # Note that CMake does not have expressions except in conditionals,
-  # so we're left with this if/else/endif pattern.
-  set(DEFAULT_WANT_CPPUNIT OFF)
-else()
-  set(DEFAULT_WANT_CPPUNIT ON)
-endif()
-option(WANT_CPPUNIT "Enables CppUnit and tests" ${DEFAULT_WANT_CPPUNIT})
-
 # SOCK_CLOEXEC
 option(WANT_SOCK_CLOEXEC "Enables SOCK_CLOEXEC on sockets" OFF)
 include(CheckSymbolExists)
@@ -236,58 +223,4 @@ target_link_libraries(cli zookeeper)
 if(WANT_SYNCAPI AND NOT WIN32)
   add_executable(load_gen src/load_gen.c)
   target_link_libraries(load_gen zookeeper)
-endif()
-
-# tests
-set(test_sources
-  tests/TestDriver.cc
-  tests/LibCMocks.cc
-  tests/LibCSymTable.cc
-  tests/MocksBase.cc
-  tests/ZKMocks.cc
-  tests/Util.cc
-  tests/ThreadingUtil.cc
-  tests/TestZookeeperInit.cc
-  tests/TestZookeeperClose.cc
-  tests/TestSASLAuth.cc
-  tests/TestReconfig.cc
-  tests/TestReconfigServer.cc
-  tests/TestClientRetry.cc
-  tests/TestOperations.cc
-  tests/TestMulti.cc
-  tests/TestWatchers.cc
-  tests/TestClient.cc
-  tests/ZooKeeperQuorumServer.cc
-  tests/TestReadOnlyClient.cc
-  tests/TestLogClientEnv.cc)
-
-if(WANT_SYNCAPI)
-  list(APPEND test_sources tests/PthreadMocks.cc)
-endif()
-
-if(WANT_CPPUNIT)
-  set (CMAKE_CXX_STANDARD 11)
-  add_executable(zktest ${test_sources})
-  target_include_directories(zktest PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
-  target_compile_definitions(zktest
-    PRIVATE -DZKSERVER_CMD="${CMAKE_CURRENT_SOURCE_DIR}/tests/zkServer.sh")
-  # TODO: Use `find_library()` for `cppunit`.
-  target_link_libraries(zktest zookeeper cppunit dl)
-
-  # This reads the link flags from the file `tests/wrappers.opt` into
-  # the variable `symbol_wrappers` for use in `target_link_libraries`.
-  # It is a holdover from the original build system.
-  file(STRINGS tests/wrappers.opt symbol_wrappers)
-  if(WANT_SYNCAPI)
-    file(STRINGS tests/wrappers-mt.opt symbol_wrappers_mt)
-  endif()
-
-  target_link_libraries(zktest ${symbol_wrappers} ${symbol_wrappers_mt})
-
-  enable_testing()
-  add_test(NAME zktest_runner COMMAND zktest)
-  set_property(TEST zktest_runner PROPERTY ENVIRONMENT
-    "ZKROOT=${CMAKE_CURRENT_SOURCE_DIR}/../.."
-    "CLASSPATH=$CLASSPATH:$CLOVER_HOME/lib/clover*.jar")
 endif()

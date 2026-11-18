@@ -69,9 +69,6 @@
     <fileset dir="${zk.root}/build/lib">
       <include name="**/*.jar" />
     </fileset>
-    <fileset dir="${zk.root}/build/test/lib">
-      <include name="**/*.jar"/>
-    </fileset>
     <fileset dir="${zk.root}/zookeeper-server/src/main/resources/lib">
       <include name="**/*.jar" />
     </fileset>

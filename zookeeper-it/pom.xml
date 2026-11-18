@@ -47,13 +47,6 @@
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.zookeeper</groupId>
-      <artifactId>zookeeper</artifactId>
-      <classifier>tests</classifier>
-      <type>test-jar</type>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.junit.vintage</groupId>
       <artifactId>junit-vintage-engine</artifactId>
     </dependency>

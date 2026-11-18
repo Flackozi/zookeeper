@@ -152,7 +152,6 @@
     <jar jarfile="${jarname}">
       <fileset file="${zk.root}/LICENSE.txt" />
       <fileset dir="${build.classes}"/>
-      <fileset dir="${build.test}"/>
     </jar>
   </target>
 

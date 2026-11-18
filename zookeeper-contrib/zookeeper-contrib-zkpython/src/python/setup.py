@@ -35,7 +35,6 @@ zookeepermodule = Extension("zookeeper",
                             libraries=["zookeeper_mt"],
                             library_dirs=[zookeeper_basedir + "/zookeeper-client/zookeeper-client-c/.libs/",
                                           zookeeper_basedir + "/zookeeper-client/zookeeper-client-c/target/c/.libs/",
-                                          zookeeper_basedir + "/build/test/test-cppunit/.libs",
                                           "/usr/local/lib"
                                           ])
 

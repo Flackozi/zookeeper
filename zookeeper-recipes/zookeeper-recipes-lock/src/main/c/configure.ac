@@ -49,10 +49,8 @@ DX_INIT_DOXYGEN([zookeeper-locks],[c-doc.Doxyfile],[docs])
 
   
 ZOOKEEPER_PATH=${BUILD_PATH}/../../../../../zookeeper-client/zookeeper-client-c
-ZOOKEEPER_LD=-L${BUILD_PATH}/../../../../../zookeeper-client/zookeeper-client-c\ -lzookeeper_mt
 
 AC_SUBST(ZOOKEEPER_PATH)
-AC_SUBST(ZOOKEEPER_LD)
 
 # Checks for header files.
 AC_HEADER_DIRENT
@@ -71,8 +69,6 @@ AC_HEADER_TIME
 AC_C_VOLATILE
 AC_PROG_CC
 AC_PROG_LIBTOOL
-#check for cppunit 
-AM_PATH_CPPUNIT(1.10.2)
 # Checks for library functions.
 AC_FUNC_UTIME_NULL
 AC_CHECK_FUNCS([gettimeofday memset mkdir rmdir strdup strerror strstr strtol strtoul strtoull utime])

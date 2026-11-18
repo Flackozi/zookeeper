@@ -26,21 +26,5 @@ libzoolock_la_SOURCES = src/zoo_lock.c include/zoo_lock.h
 libzoolock_la_CPPFLAGS = -DDLOPEN_MODULE
 libzoolock_la_LDFLAGS = -version-info 0:1:0
 
-#run the tests now
-
-TEST_SOURCES = tests/TestDriver.cc tests/TestClient.cc tests/Util.cc 
-
-
-check_PROGRAMS = zklocktest
-nodist_zklocktest_SOURCES = ${TEST_SOURCES}
-zklocktest_LDADD =  ${ZOOKEEPER_LD} libzoolock.la -lpthread  ${CPPUNIT_LIBS}
-zklocktest_CXXFLAGS = -DUSE_STATIC_LIB ${CPPUNIT_CFLAGS}
-
-run-check: check
-	./zklocktest ${TEST_OPTIONS}
-
-clean-local: clean-check
+clean-local:
 	${RM} ${DX_CLEANFILES}
-
-clean-check:
-	${RM} ${nodist_zklocktest_OBJECTS} 

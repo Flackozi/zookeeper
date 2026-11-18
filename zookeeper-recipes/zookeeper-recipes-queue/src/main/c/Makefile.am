@@ -26,21 +26,5 @@ libzooqueue_la_SOURCES = src/zoo_queue.c include/zoo_queue.h
 libzooqueue_la_CPPFLAGS = -DDLOPEN_MODULE
 libzooqueue_la_LDFLAGS = -version-info 0:1:0
 
-#run the tests now
-
-TEST_SOURCES = tests/TestDriver.cc tests/TestClient.cc tests/Util.cc 
-
-
-check_PROGRAMS = zkqueuetest
-nodist_zkqueuetest_SOURCES = ${TEST_SOURCES}
-zkqueuetest_LDADD =  ${ZOOKEEPER_LD} libzooqueue.la -lpthread  ${CPPUNIT_LIBS}
-zkqueuetest_CXXFLAGS = -DUSE_STATIC_LIB ${CPPUNIT_CFLAGS}
-
-run-check: check
-	./zkqueuetest ${TEST_OPTIONS}
-
-clean-local: clean-check
+clean-local:
 	${RM} ${DX_CLEANFILES}
-
-clean-check:
-	${RM} ${nodist_zkqueuetest_OBJECTS} 

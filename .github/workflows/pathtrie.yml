@@ -32,7 +32,7 @@ jobs:
           cache: maven
 
       - name: Build ZooKeeper Jute
-        run: mvn -B -ntp -pl zookeeper-jute -am -DskipTests -Dmaven.javadoc.skip=true install
+        run: mvn -B -ntp -pl zookeeper-jute -am -DskipTests -Dmaven.javadoc.skip=true clean install
 
       - name: Run PathTrie project tests
-        run: mvn -B -ntp -pl zookeeper-server -Dtest=PathTrieProjectTest -DfailIfNoTests=true test
+        run: mvn -B -ntp -pl zookeeper-server -DfailIfNoTests=true clean test

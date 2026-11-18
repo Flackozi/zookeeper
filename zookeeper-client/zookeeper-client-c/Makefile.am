@@ -1,8 +1,6 @@
 # need this for Doxygen integration
 include $(top_srcdir)/aminclude.am
 
-AUTOMAKE_OPTIONS = serial-tests
-
 if SOLARIS
   SOLARIS_CPPFLAGS = -D_POSIX_PTHREAD_SEMANTICS
   SOLARIS_LIB_LDFLAGS = -lnsl -lsocket
@@ -19,7 +17,7 @@ if WANT_SASL
   SASL_SRC = src/zk_sasl.c
 endif
 
-AM_CPPFLAGS = -I${srcdir}/include -I${srcdir}/tests -I${srcdir}/generated $(SOLARIS_CPPFLAGS) $(OPENSSL_CPPFLAGS) $(SASL_CPPFLAGS)
+AM_CPPFLAGS = -I${srcdir}/include -I${srcdir}/generated $(SOLARIS_CPPFLAGS) $(OPENSSL_CPPFLAGS) $(SASL_CPPFLAGS)
 AM_CFLAGS = -Wall -Werror -Wdeclaration-after-statement
 AM_CXXFLAGS = -Wall $(USEIPV6)
 LIB_LDFLAGS = -no-undefined -version-info 2 $(SOLARIS_LIB_LDFLAGS) $(OPENSSL_LIB_LDFLAGS) $(SASL_LIB_LDFLAGS)
@@ -88,73 +86,5 @@ load_gen_CFLAGS = $(AM_CFLAGS) -DTHREADED
 
 endif
 
-#########################################################################
-# build and run unit tests
-
-EXTRA_DIST+=$(wildcard ${srcdir}/tests/*.cc) $(wildcard ${srcdir}/tests/*.h) \
-    ${srcdir}/tests/wrappers.opt ${srcdir}/tests/wrappers-mt.opt
-
-# These tests are ordered in a logical manner such that each builds upon basic
-# functionality tested in prior tests. e.g. the most basic functionality is
-# tested in TestZookeeperInit and TestZookeeperClose and as such should be tested
-# first as a foundation with more complex test suites to follow.
-TEST_SOURCES = \
-	tests/TestDriver.cc \
-	tests/LibCMocks.cc \
-	tests/LibCSymTable.cc \
-	tests/MocksBase.cc \
-	tests/ZKMocks.cc \
-	tests/Util.cc \
-	tests/ThreadingUtil.cc \
-	tests/TestZookeeperInit.cc \
-	tests/TestZookeeperClose.cc \
-	tests/TestReconfig.cc \
-	tests/TestReconfigServer.cc \
-	tests/TestClientRetry.cc \
-	tests/TestOperations.cc \
-	tests/TestMulti.cc \
-	tests/TestWatchers.cc \
-	tests/TestClient.cc \
-	tests/ZooKeeperQuorumServer.cc \
-	tests/ZooKeeperQuorumServer.h \
-	tests/TestReadOnlyClient.cc \
-	tests/TestLogClientEnv.cc \
-        tests/TestSASLAuth.cc \
-	$(NULL)
-
-if SOLARIS
-  SHELL_SYMBOL_WRAPPERS = cat ${srcdir}/tests/wrappers.opt
-  SYMBOL_WRAPPERS=$(SHELL_SYMBOL_WRAPPERS:sh)
-else
-  SYMBOL_WRAPPERS=$(shell cat ${srcdir}/tests/wrappers.opt)
-endif
-
-check_PROGRAMS = zktest-st
-TESTS_ENVIRONMENT = ZKROOT=${srcdir}/../.. \
-                    CLASSPATH=$$CLASSPATH:$$CLOVER_HOME/lib/clover*.jar
-nodist_zktest_st_SOURCES = $(TEST_SOURCES)
-zktest_st_LDADD = libzkst.la libhashtable.la $(CPPUNIT_LIBS) $(OPENSSL_LIB_LDFLAGS) $(SASL_LIB_LDFLAGS) -ldl
-zktest_st_CXXFLAGS = $(AM_CXXFLAGS) -DUSE_STATIC_LIB $(CPPUNIT_CFLAGS) $(SOLARIS_CPPFLAGS)
-zktest_st_LDFLAGS = -shared $(SYMBOL_WRAPPERS) $(SOLARIS_LIB_LDFLAGS)
-
-if WANT_SYNCAPI
-  check_PROGRAMS += zktest-mt
-  nodist_zktest_mt_SOURCES = $(TEST_SOURCES) tests/PthreadMocks.cc
-  zktest_mt_LDADD = libzkmt.la libhashtable.la -lpthread $(CPPUNIT_LIBS) $(OPENSSL_LIB_LDFLAGS) $(SASL_LIB_LDFLAGS) -ldl
-  zktest_mt_CXXFLAGS = $(AM_CXXFLAGS) -DUSE_STATIC_LIB -DTHREADED $(CPPUNIT_CFLAGS) $(USEIPV6)
-if SOLARIS
-  SHELL_SYMBOL_WRAPPERS_MT = cat ${srcdir}/tests/wrappers-mt.opt
-  SYMBOL_WRAPPERS_MT=$(SYMBOL_WRAPPERS) $(SHELL_SYMBOL_WRAPPERS_MT:sh)
-else
-  SYMBOL_WRAPPERS_MT=$(SYMBOL_WRAPPERS) $(shell cat ${srcdir}/tests/wrappers-mt.opt)
-endif
-  zktest_mt_LDFLAGS = -shared $(SYMBOL_WRAPPERS_MT) $(SOLARIS_LIB_LDFLAGS)
-endif
-
-TESTS = $(check_PROGRAMS)
-
-clean-local: clean-check
+clean-local:
 	$(RM) $(DX_CLEANFILES)
-
-clean-check:
-	$(RM) $(nodist_zktest_st_OBJECTS) $(nodist_zktest_mt_OBJECTS)

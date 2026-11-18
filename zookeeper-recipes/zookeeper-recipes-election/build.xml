@@ -44,7 +44,6 @@
     <jar jarfile="${jarname}">
       <fileset file="${zk.root}/LICENSE.txt" />
       <fileset dir="${build.classes}"/>
-      <fileset dir="${build.test}"/>
     </jar>
   </target>
 
@@ -114,10 +113,6 @@
 
     <copy file="${basedir}/build.xml" todir="${dist.dir}/zookeeper-recipes/zookeeper-recipes-${name}"/>
 
-    <mkdir dir="${dist.dir}/zookeeper-recipes/zookeeper-recipes-${name}/src/test/java"/>
-    <copy todir="${dist.dir}/zookeeper-recipes/zookeeper-recipes-${name}/src/test/java">
-      <fileset dir="${basedir}/src/test/java"/>
-    </copy>
     <mkdir dir="${dist.dir}/zookeeper-recipes/zookeeper-recipes-${name}/src/main/java"/>
     <copy todir="${dist.dir}/zookeeper-recipes/zookeeper-recipes-${name}/src/main/java">
       <fileset dir="${basedir}/src/main/java"/>
