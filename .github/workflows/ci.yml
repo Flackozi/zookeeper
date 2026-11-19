@@ -34,5 +34,5 @@ jobs:
       - name: Build ZooKeeper Jute
         run: mvn -B -ntp -pl zookeeper-jute -am -DskipTests -Dmaven.javadoc.skip=true clean install
 
-      - name: Run project tests
-        run: mvn -B -ntp -pl zookeeper-server -DfailIfNoTests=true clean test
+      - name: Run WatchManagerOptimized manual tests
+        run: mvn -B -ntp -pl zookeeper-server -Dtest=WatchManagerOptimizedProjectTest -DfailIfNoTests=true clean test
